@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #define CHORD_TEXT_SIZE 1024
+#define CHORD_ITEMS_MAX 64
 
 /*
 #define A   0
@@ -26,6 +27,6 @@ struct s_chord_text
     int section_length;
 };
 
-void songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, char *text);
+int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, char *text);
 
 #endif
