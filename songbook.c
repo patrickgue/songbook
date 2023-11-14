@@ -10,7 +10,7 @@
 
 int main(int argc, char **argv)
 {
-    int i, is_only_chords = 0;
+    int i, j, is_only_chords = 0;
     char buffer[BUFF_SIZE],
         chords_buffer[BUFF_SIZE] = "",
         text_buffer[BUFF_SIZE] = "",
@@ -33,11 +33,18 @@ int main(int argc, char **argv)
     
     while (fgets(buffer, BUFF_SIZE, fd) != NULL)
     {
-        if (buffer == NULL || strlen(buffer) == )
+        if (buffer == NULL || strlen(buffer) == 0)
             continue;
+
         if (buffer[0] == '[')
         {
-            /* TODO: Start section */
+            strncpy(current_section_name, (buffer + 1), BUFF_SIZE);
+            current_section_name[strlen(current_section_name) - 2] = 0;
+            for (j = 0; j < strlen(current_section_name); j++)
+                current_section_name[j] = current_section_name[j] | 0b1100000;
+#ifdef DEBUG
+            printf("----------------\n%s\n----------------\n", current_section_name);
+#endif
         }
         
         
