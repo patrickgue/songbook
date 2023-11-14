@@ -33,6 +33,14 @@ int main(int argc, char **argv)
     
     while (fgets(buffer, BUFF_SIZE, fd) != NULL)
     {
+        if (buffer == NULL || strlen(buffer) == )
+            continue;
+        if (buffer[0] == '[')
+        {
+            /* TODO: Start section */
+        }
+        
+        
         if (buffer[0] == '#')
         {
             if (strlen(chords_buffer) > 0)
