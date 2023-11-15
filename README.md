@@ -52,6 +52,3 @@ Build using BSD Make: `bmake` (or simply make on BSD systems)
 * Format only supports 7-bit ASCII. Support UTF-8, as an interim step, substitute two byte values with indexed values
 * Support additional leadsheets features
 
-**Bugs**
-
-* list of chord sections is not cleaned properly
