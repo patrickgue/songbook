@@ -1,0 +1,59 @@
+.TH songbook
+
+.Sh NAME
+.B songbook
+- generate chord books
+
+.SH SYNOPSIS
+.B songbook
+.RB -l|-h
+.RB [-s,-i,-o]
+
+.SH DESCRIPTION
+.B songbook
+
+Program to create simple song books for different formats. Currently following formats are supported:
+
+
+.RS
+.nf
+- LaTeX using the leadsheets package
+- HTML
+.RE
+
+
+.SH OPTIONS
+.IP "-h"
+Set HTML as Output format
+
+.IP "-l"
+Set LaTeX as Output format
+
+.IP "-s"
+Generate standalone document
+
+.IP "-i <input file>"
+Input file path
+
+.IP "-o <output file>"
+Output file path
+.RE
+
+Either -h or -l have to be provided. If input or output file are omitted, the program reads and writes from stdin and stdout respectively.
+
+
+.SH DIAGNOSTICS
+.PP
+Errors are written in human readable form to stderr
+
+.SH EXIT STATUS
+.TP
+.B
+0
+Success
+
+.TP
+.B
+255
+Error
+

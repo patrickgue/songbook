@@ -1,6 +1,6 @@
 PROG=songbook
 SRCS=songbook.c render.c renderer_html.c renderer_latex.c
-MAN=
+MAN=songbook.5
 
 renderer_html_template.h: template.html
 	xxd -i template.html > renderer_html_template.h
