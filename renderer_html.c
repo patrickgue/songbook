@@ -35,7 +35,7 @@ void render_html_line(struct s_chord_text *chords, int count)
         }
 
 
-        fprintf(fd, "<span class=\"section\" style=\"min-width: %dpx\">%s</span> ", strlen(chords[i].chord) * 10, chords[i].section);
+        fprintf(fd, "<span class=\"section\" style=\"min-width: %dpx\">%s</span> \n", strlen(chords[i].chord) * 10, chords[i].section);
     }
     fprintf(fd, "</p>\n");
 }

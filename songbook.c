@@ -13,31 +13,89 @@
 
 int main(int argc, char **argv)
 {
-    int i, j, is_only_chords = 0, chords_count;
+    int i, j, is_only_chords = 0, chords_count, standalone = 0;;
     char buffer[BUFF_SIZE],
         chords_buffer[BUFF_SIZE] = "",
         text_buffer[BUFF_SIZE] = "",
         current_section_name[BUFF_SIZE],
-        filename[BUFF_SIZE];
+        file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "";
 
-    FILE *fd;
+    FILE *fd_in, *fd_out;
     struct s_chord_text chords[CHORD_ITEMS_MAX];
     struct s_song_meta meta;
+    enum e_render_type type = NONE;
+  
 
-    render_init(stdout, HTML, 1);
-    
-    strcpy(filename, "hello.song");
-    fd = fopen(filename, "r");
-
-    if (fd == NULL)
+    for (i = 0; i < argc; i++)
     {
-        fprintf(stderr, "Unable to open file %s" ,filename);
+        if (strcmp(argv[i], "-s") == 0)
+        {
+            standalone = 1;
+        }
+        else if (strcmp(argv[i], "-h") == 0)
+        {
+            type = HTML;
+        }
+        else if (strcmp(argv[i], "-l") == 0)
+        {
+            type = LATEX;
+        }
+        else if (strcmp(argv[i], "-i") == 0 && i < argc - 1)
+        {
+            strncpy(file_input, argv[i + 1], PATH_SIZE);
+        }
+        else if (strcmp(argv[i], "-o") == 0 && i < argc - 1)
+        {
+            strncpy(file_output, argv[i + 1], PATH_SIZE);
+        }
+    }
+
+    if (type == NONE)
+    {
+        fprintf(stderr, "No format provided\n");
         return -1;
     }
+    else if (type == LATEX)
+    {
+        fprintf(stderr, "LATEX not implemented\n");
+        return -1;
+    }
+
+    if (strlen(file_input) > 0)
+    {
+        fd_in = fopen(file_input, "r");
+        if (fd_in == NULL)
+        {
+            fprintf(stderr, "Unable to open file %s\n" ,file_input);
+            return -1;
+        }
+    }
+    else
+    {
+        fd_in = stdin;
+    }
+
+    if (strlen(file_output) > 0)
+    {
+        fd_out = fopen(file_output, "w");
+        if (fd_out == NULL)
+        {
+            fprintf(stderr, "Unable to open file %s\n" ,file_output);
+            return -1;
+        }
+    }
+    else
+    {
+        fd_out = stdout;
+    }
+
+
+    render_init(fd_out, type, standalone);
+    
     
     i = 1;
     
-    while (fgets(buffer, BUFF_SIZE, fd) != NULL)
+    while (fgets(buffer, BUFF_SIZE, fd_in) != NULL)
     {
         if (buffer == NULL || strlen(buffer) == 0)
             continue;
@@ -112,7 +170,8 @@ int main(int argc, char **argv)
     }
     render_standalone_footer();
 
-    fclose(fd);
+    fclose(fd_in);
+    fclose(fd_out);
     
     return 0;
 }
@@ -122,7 +181,7 @@ int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, cha
 {
     int i, j, k, indexes[CHORD_ITEMS_MAX], is_inside_chord = 0;
     j = 0;
-
+  
 #ifdef DEBUG
     printf("Chords: '%s'\nText:   '%s'\n", chord_text, text);
 #endif

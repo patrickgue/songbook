@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#define PATH_SIZE 1024
 #define CHORD_TEXT_SIZE 1024
 #define CHORD_ITEMS_MAX 64
 #define BUFF_SIZE 2048

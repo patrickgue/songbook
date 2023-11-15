@@ -5,6 +5,7 @@
 
 enum e_render_type
 {
+    NONE,
     HTML,
     LATEX
 };
