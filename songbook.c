@@ -1,16 +1,19 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+#include "render.h"
 
 #include "songbook.h"
 
-#define DEBUG
+//#define DEBUG
 
-#define BUFF_SIZE 2048
+
 
 
 int main(int argc, char **argv)
 {
-    int i, j, is_only_chords = 0;
+    int i, j, is_only_chords = 0, chords_count;
     char buffer[BUFF_SIZE],
         chords_buffer[BUFF_SIZE] = "",
         text_buffer[BUFF_SIZE] = "",
@@ -19,7 +22,10 @@ int main(int argc, char **argv)
 
     FILE *fd;
     struct s_chord_text chords[CHORD_ITEMS_MAX];
+    struct s_song_meta meta;
 
+    render_init(stdout, HTML, 1);
+    
     strcpy(filename, "hello.song");
     fd = fopen(filename, "r");
 
@@ -36,15 +42,31 @@ int main(int argc, char **argv)
         if (buffer == NULL || strlen(buffer) == 0)
             continue;
 
+        if (buffer[0] == '@')
+        {
+            if (strncmp(buffer, "@maketitle", strlen("@maketitle")) == 0)
+            {
+                render_title(meta);
+            }
+            else
+            {
+                read_meta(buffer, &meta);
+            }
+        }
+
         if (buffer[0] == '[')
         {
             strncpy(current_section_name, (buffer + 1), BUFF_SIZE);
             current_section_name[strlen(current_section_name) - 2] = 0;
             for (j = 0; j < strlen(current_section_name); j++)
-                current_section_name[j] = current_section_name[j] | 0b1100000;
+            {
+                if (current_section_name[j] >= 'A' && current_section_name[j] <= 'Z')
+                    current_section_name[j] = current_section_name[j] | 0b1100000;
+            }
 #ifdef DEBUG
             printf("----------------\n%s\n----------------\n", current_section_name);
 #endif
+            render_section(current_section_name);
         }
         
         
@@ -79,13 +101,16 @@ int main(int argc, char **argv)
 
         if (strlen(chords_buffer) > 0 && (strlen(text_buffer) > 0 || is_only_chords))
         {
-            songbook_build_chord_list(chords, chords_buffer, text_buffer);
+            chords_count = songbook_build_chord_list(chords, chords_buffer, text_buffer);
             strcpy(chords_buffer, "");
             strcpy(text_buffer, "");
             is_only_chords = 0;
+
+            render_line(chords, chords_count);
         }
         i++;
     }
+    render_standalone_footer();
 
     fclose(fd);
     
@@ -146,4 +171,46 @@ int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, cha
 #endif
 
     return j;
+}
+
+void read_meta(char *l, struct s_song_meta *meta)
+{
+    char key[64], line[64];
+    int i = 0;
+    strncpy(line, l, strlen(l) - 1);
+    strncpy(key, line + 1, 64);
+    while (key[i] != '=')
+        i++;
+    key[i] = 0;
+
+    if (strncmp(key, "song", 64) == 0)
+    {
+        strncpy(meta->song, line + (i + 2), 64);
+    }
+    else if (strncmp(key, "artist", 64) == 0)
+    {
+        strncpy(meta->artist, line + (i + 2), 64);
+    }
+    else if (strncmp(key, "capo", 64) == 0)
+    {
+        meta->capo = atoi((const char *)(line + (i + 2)));
+    }
+}
+
+char *capo_str(int c)
+{
+    switch (c)
+    {
+    case 1: return "I";
+    case 2: return "II";
+    case 3: return "III";
+    case 4: return "IV";
+    case 5: return "V";
+    case 6: return "VI";
+    case 7: return "VII";
+    case 8: return "VIII";
+    case 9: return "IX";
+    case 10: return "X";
+    case 11: return "XI";
+    }
 }
