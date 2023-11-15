@@ -45,3 +45,9 @@ Either `-h` or `-l` have to be provided. If input or output file are omitted, th
 ## Installation
 
 Build using BSD Make: `bmake` (or simply make on BSD systems) 
+
+
+## Todo
+
+* Format only supports 7-bit ASCII. Support UTF-8, as an interim step, substitute two byte values with indexed values
+* Support additional leadsheets features
