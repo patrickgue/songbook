@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "render.h"
+#include "multibyte_substitution.h"
 
 #include "songbook.h"
 
@@ -94,6 +95,8 @@ int main(int argc, char **argv)
     {
         if (buffer == NULL || strlen(buffer) == 0)
             continue;
+
+        mb_subst(buffer, BUFF_SIZE);
 
         if (buffer[0] == '@')
         {

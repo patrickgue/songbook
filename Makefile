@@ -1,5 +1,5 @@
 PROG=songbook
-SRCS=songbook.c render.c renderer_html.c renderer_latex.c
+SRCS=songbook.c render.c renderer_html.c renderer_latex.c multibyte_substitution.c
 MAN=songbook.5
 
 renderer_html_template.h: template.html

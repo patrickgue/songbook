@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "renderer_latex_template.h"
-
+#include "multibyte_substitution.h"
 #include "renderer_latex.h"
 
 FILE *_latex_fd;
@@ -26,6 +26,7 @@ void render_latex_section_end(char *section)
 void render_latex_line(struct s_chord_text *chords, int count)
 {
     int i, has_text = 0;
+    char section[BUFF_SIZE];
 
     for (i = 0; i < count; i++)
     {
@@ -38,7 +39,9 @@ void render_latex_line(struct s_chord_text *chords, int count)
 
     for (i = 0; i < count; i++)
     {
-        fprintf(_latex_fd, "%c{%s}%s ", has_text ? '^' : '_', chords[i].chord, chords[i].section);
+        strncpy(section, chords[i].section, BUFF_SIZE);
+        mb_restore(section, BUFF_SIZE);
+        fprintf(_latex_fd, "%c{%s}%s ", has_text ? '^' : '_', chords[i].chord, section);
     }
     fprintf(_latex_fd, "\\\\\n");
 }

@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "renderer_html_template.h"
+#include "multibyte_substitution.h"
 
 #include "renderer_html.h"
 
@@ -25,6 +26,7 @@ void render_html_section(char *section)
 void render_html_line(struct s_chord_text *chords, int count)
 {
     int i;
+    char section[BUFF_SIZE];
 
     fprintf(fd, "<p class=\"line\">\n");
     for (i = 0; i < count; i++)
@@ -34,8 +36,9 @@ void render_html_line(struct s_chord_text *chords, int count)
             fprintf(fd, "<span class=\"chord\">%s</span> ", chords[i].chord);
         }
 
-
-        fprintf(fd, "<span class=\"section\" style=\"min-width: %dpx\">%s</span> \n", strlen(chords[i].chord) * 10, chords[i].section);
+        strncpy(section, chords[i].section, BUFF_SIZE);
+        mb_restore(section, BUFF_SIZE);
+        fprintf(fd, "<span class=\"section\" style=\"min-width: %dpx\">%s</span> \n", strlen(chords[i].chord) * 10, section);
     }
     fprintf(fd, "</p>\n");
 }
