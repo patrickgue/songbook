@@ -55,11 +55,6 @@ int main(int argc, char **argv)
         fprintf(stderr, "No format provided\n");
         return -1;
     }
-    else if (type == LATEX)
-    {
-        fprintf(stderr, "LATEX not implemented\n");
-        return -1;
-    }
 
     if (strlen(file_input) > 0)
     {
@@ -114,6 +109,11 @@ int main(int argc, char **argv)
 
         if (buffer[0] == '[')
         {
+            if (strlen(current_section_name) > 0)
+            {
+                render_section_end(current_section_name);
+            }
+            
             strncpy(current_section_name, (buffer + 1), BUFF_SIZE);
             current_section_name[strlen(current_section_name) - 2] = 0;
             for (j = 0; j < strlen(current_section_name); j++)
@@ -168,7 +168,8 @@ int main(int argc, char **argv)
         }
         i++;
     }
-    render_standalone_footer();
+    render_section_end(current_section_name);
+    render_song_end();
 
     fclose(fd_in);
     fclose(fd_out);
