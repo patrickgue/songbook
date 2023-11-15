@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "renderer_latex_template.h"
 
 #include "renderer_latex.h"
@@ -23,11 +25,20 @@ void render_latex_section_end(char *section)
 
 void render_latex_line(struct s_chord_text *chords, int count)
 {
-    int i;
+    int i, has_text = 0;
 
     for (i = 0; i < count; i++)
     {
-        fprintf(_latex_fd, "^{%s}%s ", chords[i].chord, chords[i].section);
+        if (strlen(chords[i].section) > 0)
+        {
+            has_text = 1;
+            break;
+        }
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        fprintf(_latex_fd, "%c{%s}%s ", has_text ? '^' : '_', chords[i].chord, chords[i].section);
     }
     fprintf(_latex_fd, "\\\\\n");
 }

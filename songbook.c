@@ -222,6 +222,10 @@ int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, cha
                 chords[i].section[indexes[i + 1] - indexes[i]] = 0;
             }
         }
+        else
+        {
+            strcpy(chords[i].section, "");
+        }
 #ifdef DEBUG
         printf("%d: '%s': '%s'\n", i, chords[i].chord, chords[i].section);
 #endif
