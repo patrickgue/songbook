@@ -49,6 +49,6 @@ Build using BSD Make: `bmake` (or simply make on BSD systems)
 
 ## Todo
 
-* Format only supports 7-bit ASCII. Support UTF-8, as an interim step, substitute two byte values with indexed values
+* Format only supports 7-bit ASCII (with escaping two-byte codes). Support UTF-8
 * Support additional leadsheets features
 
