@@ -9,10 +9,11 @@ void render_init(FILE *fd, enum e_render_type t, int standalone)
 {
     type = t;
 
-    if (type == HTML)
-        render_html_init(fd, standalone);
-    else if (type == LATEX)
-        render_latex_init(fd, standalone);
+    switch (type)
+    {
+    case HTML: render_html_init(fd, standalone); break;
+    case LATEX: render_latex_init(fd, standalone); break;
+    }
 }
 
 void render_section(char *section)

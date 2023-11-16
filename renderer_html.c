@@ -33,12 +33,12 @@ void render_html_line(struct s_chord_text *chords, int count)
     {
         if (strlen(chords[i].chord) > 0)
         {
-            fprintf(fd, "<span class=\"chord\">%s</span> ", chords[i].chord);
+            fprintf(fd, "<span class=\"chord\">%s</span>", chords[i].chord);
         }
 
         strncpy(section, chords[i].section, BUFF_SIZE);
         mb_restore(section, BUFF_SIZE);
-        fprintf(fd, "<span class=\"section\" style=\"min-width: %dpx\">%s</span> \n", strlen(chords[i].chord) * 10, section);
+        fprintf(fd, "<span class=\"section\" style=\"min-width: %dpx\">%s</span>", strlen(chords[i].chord) * 10, section);
     }
     fprintf(fd, "</p>\n");
 }
