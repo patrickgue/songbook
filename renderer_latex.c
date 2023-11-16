@@ -41,7 +41,14 @@ void render_latex_line(struct s_chord_text *chords, int count)
     {
         strncpy(section, chords[i].section, BUFF_SIZE);
         mb_restore(section, BUFF_SIZE);
-        fprintf(_latex_fd, "%c{%s}%s ", has_text ? '^' : '_', chords[i].chord, section);
+        if (strlen(chords[i].chord) > 0)
+        {
+            fprintf(_latex_fd, "%c{%s}%s ", has_text ? '^' : '_', chords[i].chord, section);
+        }
+        else
+        {
+            fprintf(_latex_fd, "%s ", section);
+        }
     }
     fprintf(_latex_fd, "\\\\\n");
 }
