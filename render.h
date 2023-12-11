@@ -7,7 +7,8 @@ enum e_render_type
 {
     NONE,
     HTML,
-    LATEX
+    LATEX,
+    PDF
 };
 
 void render_init(FILE *, enum e_render_type, int);
