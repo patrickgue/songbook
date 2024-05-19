@@ -18,14 +18,15 @@ int main(int argc, char **argv)
         chords_buffer[BUFF_SIZE] = L"",
         text_buffer[BUFF_SIZE] = L"",
         current_section_name[BUFF_SIZE];
-    char file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "";
+    char file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "", utf8_buffer[BUFF_SIZE];
 
     FILE *fd_in, *fd_out;
     struct s_chord_text chords[CHORD_ITEMS_MAX];
     struct s_song_meta meta;
     enum e_render_type type = NONE;
 
-    setlocale(LC_ALL, "en_US");
+    setlocale(LC_ALL, "");
+
 
     for (i = 0; i < argc; i++)
     {
@@ -91,10 +92,12 @@ int main(int argc, char **argv)
     
     i = 1;
     
-    while (fgetws(buffer, BUFF_SIZE, fd_in) != NULL)
+    while (fgets(utf8_buffer, BUFF_SIZE, fd_in) != NULL)
     {
-        if (buffer == NULL || wcslen(buffer) == 0)
+        if (utf8_buffer == NULL || strlen(utf8_buffer) == 0)
             continue;
+
+        mbstowcs(buffer, utf8_buffer, BUFF_SIZE);
         
         if (buffer[0] == L'@')
         {
