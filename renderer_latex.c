@@ -1,7 +1,7 @@
 #include <string.h>
 
+
 #include "renderer_latex_template.h"
-#include "multibyte_substitution.h"
 #include "renderer_latex.h"
 
 FILE *_latex_fd;
@@ -13,24 +13,24 @@ void render_latex_init(FILE *f, int s)
     _latex_standalone = s;
 }
 
-void render_latex_section(char *section)
+void render_latex_section(wchar_t *section)
 {
-    fprintf(_latex_fd, "\\begin{%s}\n", section);
+    fwprintf(_latex_fd, L"\\begin{%ls}\n", section);
 }
 
-void render_latex_section_end(char *section)
+void render_latex_section_end(wchar_t *section)
 {
-    fprintf(_latex_fd, "\\end{%s}\n", section);
+    fwprintf(_latex_fd, L"\\end{%ls}\n", section);
 }
 
 void render_latex_line(struct s_chord_text *chords, int count)
 {
     int i, has_text = 0;
-    char section[BUFF_SIZE];
+    wchar_t section[BUFF_SIZE];
 
     for (i = 0; i < count; i++)
     {
-        if (strlen(chords[i].section) > 0)
+        if (wcslen(chords[i].section) > 0)
         {
             has_text = 1;
             break;
@@ -39,41 +39,42 @@ void render_latex_line(struct s_chord_text *chords, int count)
 
     for (i = 0; i < count; i++)
     {
-        strncpy(section, chords[i].section, BUFF_SIZE);
-        mb_restore(section, BUFF_SIZE);
-        if (strlen(chords[i].chord) > 0)
+        wcsncpy(section, chords[i].section, BUFF_SIZE);
+
+        if (wcslen(chords[i].chord) > 0)
         {
-            fprintf(_latex_fd, "%c{%s}%s ", has_text ? '^' : '_', chords[i].chord, section);
+            fwprintf(_latex_fd, L"%c{%ls}%ls ", has_text ? '^' : '_', chords[i].chord, section);
         }
         else
         {
-            fprintf(_latex_fd, "%s ", section);
+            fwprintf(_latex_fd, L"%ls ", section);
         }
     }
-    fprintf(_latex_fd, "\\\\\n");
+    fwprintf(_latex_fd, L"\\\\\n");
 }
 
 void render_latex_title(struct s_song_meta meta)
 {
     if (_latex_standalone)
     {
-        fwrite(template_tex, template_tex_len, 1, _latex_fd);
+        template_tex[template_tex_len - 1] = 0;
+        fwprintf(_latex_fd, L"%hs", template_tex);
     }
     
-    fprintf(_latex_fd, "\\begin{song}[align-chords=l]{title=%s", meta.song);
+    fwprintf(_latex_fd, L"\\begin{song}[align-chords=l]{title=%ls", meta.song);
     if (meta.capo != 0)
-        fprintf(_latex_fd, ",capo=%d", meta.capo);
-    fprintf(_latex_fd, "}\n");
+        fwprintf(_latex_fd, L",capo=%d", meta.capo);
+    fwprintf(_latex_fd, L"}\n");
     if (meta.capo != 0)
-        fprintf(_latex_fd, "\\capo\n");
+        fwprintf(_latex_fd, L"\\capo\n");
         
 }
 
 void render_latex_song_end()
 {
-    fprintf(_latex_fd, "\\end{song}\n");
+    fwprintf(_latex_fd, L"\\end{song}\n");
     if (_latex_standalone)
     {
-        fprintf(_latex_fd, "\\end{document}\n");
+        fwprintf(_latex_fd, L"\\end{document}\n");
     }
 }

@@ -1,7 +1,6 @@
 #include <string.h>
 
 #include "renderer_html_template.h"
-#include "multibyte_substitution.h"
 
 #include "renderer_html.h"
 
@@ -14,55 +13,56 @@ void render_html_init(FILE *out_fd, int s)
     standalone = s;
 }
 
-void render_html_section(char *section)
+void render_html_section(wchar_t *section)
 {
-    char sec_cpy[BUFF_SIZE];
-    strncpy(sec_cpy, section, BUFF_SIZE);
+    wchar_t sec_cpy[BUFF_SIZE];
+    wcsncpy(sec_cpy, section, BUFF_SIZE);
     sec_cpy[0] = sec_cpy[0] & 0b11011111;
     
-    fprintf(fd, "<h3>%s</h3>\n", sec_cpy);
+    fwprintf(fd, L"<h3>%ls</h3>\n", sec_cpy);
 }
 
 void render_html_line(struct s_chord_text *chords, int count)
 {
     int i;
-    char section[BUFF_SIZE];
+    wchar_t section[BUFF_SIZE];
 
-    fprintf(fd, "<p class=\"line\">\n");
+    fwprintf(fd, L"<p class=\"line\">\n");
     for (i = 0; i < count; i++)
     {
-        if (strlen(chords[i].chord) > 0)
+        if (wcslen(chords[i].chord) > 0)
         {
-            fprintf(fd, "<span class=\"chord\">%s</span>", chords[i].chord);
+            fwprintf(fd, L"<span class=\"chord\">%ls</span>", chords[i].chord);
         }
 
-        strncpy(section, chords[i].section, BUFF_SIZE);
-        mb_restore(section, BUFF_SIZE);
-        fprintf(fd, "<span class=\"section\" style=\"min-width: %dpx\">%s</span>", strlen(chords[i].chord) * 10, section);
+        wcsncpy(section, chords[i].section, BUFF_SIZE);
+        fwprintf(fd, L"<span class=\"section\" style=\"min-width: %dpx\">%ls</span>", wcslen(chords[i].chord) * 10, section);
     }
-    fprintf(fd, "</p>\n");
+    fwprintf(fd, L"</p>\n");
 }
 
 void render_html_title(struct s_song_meta meta)
 {
     char template_html_str[template_html_len + 1];
+    wchar_t w_template[template_html_len + 1];
     if (standalone)
     {
         strncpy(template_html_str, template_html, template_html_len + 1);
         template_html_str[template_html_len] = 0;
-        fprintf(fd, template_html_str, meta.song);
+        swprintf(w_template, template_html_len + 1, L"%hs", template_html_str);
+        fwprintf(fd, w_template, meta.song);
     }
     
-    fprintf(fd, "<h2>%s</h2><p><i>%s", meta.song, meta.artist);
+    fwprintf(fd, L"<h2>%ls</h2><p><i>%ls", meta.song, meta.artist);
     if (meta.capo != 0)
     {
-        fprintf(fd, ", Capo: %s", capo_str(meta.capo));
+        fwprintf(fd, L", Capo: %ls", capo_str(meta.capo));
     }
-    fprintf(fd, "</i></p>\n");
+    fwprintf(fd, L"</i></p>\n");
 }
 
 void render_html_standalone_footer()
 {
     if (standalone)
-        fprintf(fd, "</div>\n</body>\n</html>\n");
+        fwprintf(fd, L"</div>\n</body>\n</html>\n");
 }

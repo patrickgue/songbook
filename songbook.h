@@ -2,6 +2,7 @@
 #define _songbook_h
 
 #include <stdint.h>
+#include <wchar.h>
 
 #define PATH_SIZE 1024
 #define CHORD_TEXT_SIZE 1024
@@ -24,19 +25,19 @@
 
 struct s_chord_text
 {
-    char chord[32];
-    char section[CHORD_TEXT_SIZE];
+    wchar_t chord[32];
+    wchar_t section[CHORD_TEXT_SIZE];
 };
 
 struct s_song_meta
 {
-    char song[64];
-    char artist[64];
+    wchar_t song[64];
+    wchar_t artist[64];
     int capo;
 };
 
-int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, char *text);
-void read_meta(char *line, struct s_song_meta *meta);
-char *capo_str(int c);
+int songbook_build_chord_list(struct s_chord_text *chords, wchar_t *chord_text, wchar_t *text);
+void read_meta(wchar_t *line, struct s_song_meta *meta);
+wchar_t *capo_str(int c);
 
 #endif
