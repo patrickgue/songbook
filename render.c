@@ -16,7 +16,7 @@ void render_init(FILE *fd, enum e_render_type t, int standalone)
     }
 }
 
-void render_section(char *section)
+void render_section(wchar_t *section)
 {
     switch(type)
     {
@@ -52,7 +52,7 @@ void render_song_end()
     }
 }
 
-void render_section_end(char *section){
+void render_section_end(wchar_t *section){
     if (type == LATEX)
         render_latex_section_end(section);
 }

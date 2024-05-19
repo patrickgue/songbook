@@ -1,9 +1,9 @@
 PROG=songbook
-SRCS=songbook.c render.c renderer_html.c renderer_latex.c renderer_pdf.c multibyte_substitution.c
+SRCS=songbook.c render.c renderer_html.c renderer_latex.c
 OBJS=$(SRCS:.c=.o)
 MAN=songbook.5
 
-LDFLAGS+=-lhpdf
+CFLAGS+=-g
 
 World: $(PROG)
 

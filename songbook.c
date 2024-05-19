@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <wchar.h>
+#include <errno.h>
+#include <locale.h>
 
 #include "render.h"
-#include "multibyte_substitution.h"
 
 #include "songbook.h"
 
@@ -12,17 +14,18 @@
 int main(int argc, char **argv)
 {
     int i, j, is_only_chords = 0, chords_count, standalone = 0;;
-    char buffer[BUFF_SIZE],
-        chords_buffer[BUFF_SIZE] = "",
-        text_buffer[BUFF_SIZE] = "",
-        current_section_name[BUFF_SIZE],
-        file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "";
+    wchar_t buffer[BUFF_SIZE],
+        chords_buffer[BUFF_SIZE] = L"",
+        text_buffer[BUFF_SIZE] = L"",
+        current_section_name[BUFF_SIZE];
+    char file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "";
 
     FILE *fd_in, *fd_out;
     struct s_chord_text chords[CHORD_ITEMS_MAX];
     struct s_song_meta meta;
     enum e_render_type type = NONE;
-  
+
+    setlocale(LC_ALL, "en_US");
 
     for (i = 0; i < argc; i++)
     {
@@ -88,16 +91,14 @@ int main(int argc, char **argv)
     
     i = 1;
     
-    while (fgets(buffer, BUFF_SIZE, fd_in) != NULL)
+    while (fgetws(buffer, BUFF_SIZE, fd_in) != NULL)
     {
-        if (buffer == NULL || strlen(buffer) == 0)
+        if (buffer == NULL || wcslen(buffer) == 0)
             continue;
-
-        mb_subst(buffer, BUFF_SIZE);
-
-        if (buffer[0] == '@')
+        
+        if (buffer[0] == L'@')
         {
-            if (strncmp(buffer, "@maketitle", strlen("@maketitle")) == 0)
+            if (wcsncmp(buffer, L"@maketitle", 10) == 0)
             {
                 render_title(meta);
             }
@@ -107,18 +108,18 @@ int main(int argc, char **argv)
             }
         }
 
-        if (buffer[0] == '[')
+        if (buffer[0] == L'[')
         {
-            if (strlen(current_section_name) > 0)
+            if (wcslen(current_section_name) > 0)
             {
                 render_section_end(current_section_name);
             }
             
-            strncpy(current_section_name, (buffer + 1), BUFF_SIZE);
-            current_section_name[strlen(current_section_name) - 2] = 0;
-            for (j = 0; j < strlen(current_section_name); j++)
+            wcsncpy(current_section_name, (buffer + 1), BUFF_SIZE);
+            current_section_name[wcslen(current_section_name) - 2] = 0;
+            for (j = 0; j < wcslen(current_section_name); j++)
             {
-                if (current_section_name[j] >= 'A' && current_section_name[j] <= 'Z')
+                if (current_section_name[j] >= L'A' && current_section_name[j] <= L'Z')
                     current_section_name[j] = current_section_name[j] | 0b1100000;
             }
 #ifdef DEBUG
@@ -128,46 +129,52 @@ int main(int argc, char **argv)
         }
         
         
-        if (buffer[0] == '#')
+        if (buffer[0] == L'#')
         {
-            if (strlen(chords_buffer) > 0)
+            if (wcslen(chords_buffer) > 0)
             {
                 fprintf(stderr, "Warning: Line of chords overwritten on line %d\n", i);
             }
             
-            strncpy(chords_buffer, buffer + 2, BUFF_SIZE);
-            chords_buffer[strlen(chords_buffer) - 1] = 0;
+            wcsncpy(chords_buffer, buffer + 2, BUFF_SIZE);
+            chords_buffer[wcslen(chords_buffer) - 1] = 0;
         }
 
-        if (buffer[0] == '#' && buffer[1] == '#')
+        if (buffer[0] == L'#' && buffer[1] == L'#')
         {
-            strncpy(chords_buffer, buffer + 3, BUFF_SIZE);
-            chords_buffer[strlen(chords_buffer) - 1] = 0;
+            wcsncpy(chords_buffer, buffer + 3, BUFF_SIZE);
+            chords_buffer[wcslen(chords_buffer) - 1] = 0;
             is_only_chords = 1;
         }
 
-        if (buffer[0] == '>')
+        if (buffer[0] == L'>')
         {
-            if (strlen(text_buffer) > 0)
+            if (wcslen(text_buffer) > 0)
             {
                 fprintf(stderr, "Warning: Line of text overwritten on line %d\n", i);
             }
             
-            strncpy(text_buffer, buffer + 2, BUFF_SIZE);
-            text_buffer[strlen(text_buffer) - 1] = 0;
+            wcsncpy(text_buffer, buffer + 2, BUFF_SIZE);
+            text_buffer[wcslen(text_buffer) - 1] = 0;
         }
 
-        if (strlen(chords_buffer) > 0 && (strlen(text_buffer) > 0 || is_only_chords))
+        if (wcslen(chords_buffer) > 0 && (wcslen(text_buffer) > 0 || is_only_chords))
         {
             chords_count = songbook_build_chord_list(chords, chords_buffer, text_buffer);
-            strcpy(chords_buffer, "");
-            strcpy(text_buffer, "");
+            wcscpy(chords_buffer, L"");
+            wcscpy(text_buffer, L"");
             is_only_chords = 0;
 
             render_line(chords, chords_count);
         }
         i++;
     }
+
+    if (ferror(fd_in) != 0)
+    {
+        perror("ERROR");
+    }
+    
     render_section_end(current_section_name);
     render_song_end();
 
@@ -178,13 +185,13 @@ int main(int argc, char **argv)
 }
 
 
-int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, char *text)
+int songbook_build_chord_list(struct s_chord_text *chords, wchar_t *chord_text, wchar_t *text)
 {
     int i, j, k, indexes[CHORD_ITEMS_MAX], is_inside_chord = 0;
     j = 0;
   
 #ifdef DEBUG
-    printf("Chords: '%s'\nText:   '%s'\n", chord_text, text);
+    wprintf(L"Chords: '%ls'\nText:   '%ls'\n", chord_text, text);
 #endif
     if (chord_text[0] == ' ')
     {
@@ -192,13 +199,13 @@ int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, cha
         j++;
     }
 
-    for (i = 0; i < strlen(chord_text); i++)
+    for (i = 0; i < wcslen(chord_text); i++)
     {
-        if (is_inside_chord && chord_text[i] == ' ')
+        if (is_inside_chord && chord_text[i] == L' ')
         {
             is_inside_chord = 0;
         }
-        else if (!is_inside_chord && chord_text[i] != ' ')
+        else if (!is_inside_chord && chord_text[i] != L' ')
         {
             is_inside_chord = 1;
             indexes[j++] = i;
@@ -209,14 +216,16 @@ int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, cha
     
     for (i = 0; i < j && indexes[i] != -1; i++)
     {
-        strncpy(chords[i].chord, chord_text + indexes[i], 32);
+        wcsncpy(chords[i].chord, chord_text + indexes[i], 32);
         k = 0;
-        while (chords[i].chord[k] != ' ')
-            k++;
-        chords[i].chord[k] = 0;
-        if (indexes[i] < strlen(text))
+        while (chords[i].chord[k] != L' ' && chords[i].chord[k] != L'\0')
         {
-            strncpy(chords[i].section, text + indexes[i], CHORD_TEXT_SIZE);
+            k++;
+        }
+        chords[i].chord[k] = 0;
+        if (indexes[i] < wcslen(text))
+        {
+            wcsncpy(chords[i].section, text + indexes[i], CHORD_TEXT_SIZE);
             if (i < j - 1)
             {
                 chords[i].section[indexes[i + 1] - indexes[i]] = 0;
@@ -224,7 +233,7 @@ int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, cha
         }
         else
         {
-            strcpy(chords[i].section, "");
+            wcscpy(chords[i].section, L"");
         }
 #ifdef DEBUG
         printf("%d: '%s': '%s'\n", i, chords[i].chord, chords[i].section);
@@ -237,44 +246,44 @@ int songbook_build_chord_list(struct s_chord_text *chords, char *chord_text, cha
     return j;
 }
 
-void read_meta(char *l, struct s_song_meta *meta)
+void read_meta(wchar_t *l, struct s_song_meta *meta)
 {
-    char key[64], line[64];
+    wchar_t key[64] = L"", line[64] = L"";
     int i = 0;
-    strncpy(line, l, strlen(l) - 1);
-    strncpy(key, line + 1, 64);
-    while (key[i] != '=')
+    wcsncpy(line, l, wcslen(l) - 1);
+    wcsncpy(key, line + 1, 64);
+    while (key[i] != L'=')
         i++;
     key[i] = 0;
 
-    if (strncmp(key, "song", 64) == 0)
+    if (wcsncmp(key, L"song", 64) == 0)
     {
-        strncpy(meta->song, line + (i + 2), 64);
+        wcsncpy(meta->song, line + (i + 2), 64);
     }
-    else if (strncmp(key, "artist", 64) == 0)
+    else if (wcsncmp(key, L"artist", 64) == 0)
     {
-        strncpy(meta->artist, line + (i + 2), 64);
+        wcsncpy(meta->artist, line + (i + 2), 64);
     }
-    else if (strncmp(key, "capo", 64) == 0)
+    else if (wcsncmp(key, L"capo", 64) == 0)
     {
-        meta->capo = atoi((const char *)(line + (i + 2)));
+        meta->capo = (int) wcstol((line + (i + 2)), NULL, 10);
     }
 }
 
-char *capo_str(int c)
+wchar_t *capo_str(int c)
 {
     switch (c)
     {
-    case 1: return "I";
-    case 2: return "II";
-    case 3: return "III";
-    case 4: return "IV";
-    case 5: return "V";
-    case 6: return "VI";
-    case 7: return "VII";
-    case 8: return "VIII";
-    case 9: return "IX";
-    case 10: return "X";
-    case 11: return "XI";
+    case 1: return L"I";
+    case 2: return L"II";
+    case 3: return L"III";
+    case 4: return L"IV";
+    case 5: return L"V";
+    case 6: return L"VI";
+    case 7: return L"VII";
+    case 8: return L"VIII";
+    case 9: return L"IX";
+    case 10: return L"X";
+    case 11: return L"XI";
     }
 }
