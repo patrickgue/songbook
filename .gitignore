@@ -6,3 +6,5 @@ songbook
 *.d
 *.o
 libsongbook.a
+converter
+

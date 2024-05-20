@@ -1,19 +1,21 @@
-PROG=songbook
+PROG=converter
 LIB=libsongbook.a
-SRCS=songbook.c render.c renderer_html.c renderer_latex.c
-APP_SRCS=$(SRCS) main.c
-OBJS=$(SRCS:.c=.o)
+LIB_SRCS=songbook.c render.c renderer_html.c renderer_latex.c
+APP_SRCS=converter.c
+LIB_OBJS=$(LIB_SRCS:.c=.o)
 APP_OBJS=$(APP_SRCS:.c=.o)
 MAN=songbook.5
 
 CFLAGS+=-g -Wall
 
+APP_LDFLAGS=-lsongbook -L.
+
 World: $(PROG) $(LIB)
 
-$(PROG): $(APP_OBJS)
-	$(CC) -o $@ $(LDFLAGS) $^
+$(PROG): $(LIB) $(APP_OBJS)
+	$(CC) -o $@ $^ $(LDFLAGS) $(APP_LDFLAGS)
 
-$(LIB): $(OBJS)
+$(LIB): $(LIB_OBJS)
 	ar rcs libsongbook.a $^
 
 %.o:%.c
@@ -27,4 +29,4 @@ renderer_latex_template.h: template.tex
 
 
 clean:
-	rm -f $(APP_OBJS) $(PROG) $(LIB)
+	rm -f $(APP_OBJS) $(PROG) $(LIB) $(LIB_OBJS)
