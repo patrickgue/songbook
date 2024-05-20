@@ -9,24 +9,16 @@
 
 #include "songbook.h"
 
-
-
 int main(int argc, char **argv)
 {
-    int i, j, is_only_chords = 0, chords_count, standalone = 0;;
-    wchar_t buffer[BUFF_SIZE],
-        chords_buffer[BUFF_SIZE] = L"",
-        text_buffer[BUFF_SIZE] = L"",
-        current_section_name[BUFF_SIZE];
-    char file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "", utf8_buffer[BUFF_SIZE] = "";
+    int i, standalone;
+   
+    char file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "";
 
     FILE *fd_in, *fd_out;
-    struct s_chord_text chords[CHORD_ITEMS_MAX];
-    struct s_song_meta meta;
     enum e_render_type type = NONE;
 
     setlocale(LC_ALL, "");
-
 
     for (i = 0; i < argc; i++)
     {
@@ -86,12 +78,29 @@ int main(int argc, char **argv)
         fd_out = stdout;
     }
 
+    songbook_render(fd_in, fd_out, type, standalone);
+
+    fclose(fd_in);
+    fclose(fd_out);
+    
+    return 0;
+}
+
+void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int standalone)
+{
+    int i, j, is_only_chords, chords_count;
+    char utf8_buffer[BUFF_SIZE];
+    wchar_t buffer[BUFF_SIZE],
+        chords_buffer[BUFF_SIZE] = L"",
+        text_buffer[BUFF_SIZE] = L"",
+        current_section_name[BUFF_SIZE];;
+    struct s_chord_text chords[CHORD_ITEMS_MAX];
+    struct s_song_meta meta;
 
     render_init(fd_out, type, standalone);
     
-    
     i = 1;
-    
+
     while (fgets(utf8_buffer, BUFF_SIZE, fd_in) != NULL)
     {
         if (strlen(utf8_buffer) == 0)
@@ -180,13 +189,7 @@ int main(int argc, char **argv)
     
     render_section_end(current_section_name);
     render_song_end();
-
-    fclose(fd_in);
-    fclose(fd_out);
-    
-    return 0;
 }
-
 
 int songbook_build_chord_list(struct s_chord_text *chords, wchar_t *chord_text, wchar_t *text)
 {

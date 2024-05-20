@@ -3,14 +3,10 @@
 
 #include <wchar.h>
 
+#include "types.h"
+
 #include "songbook.h"
 
-enum e_render_type
-{
-    NONE,
-    HTML,
-    LATEX
-};
 
 void render_init(FILE *, enum e_render_type, int);
 void render_title(struct s_song_meta);
