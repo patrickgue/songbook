@@ -1,56 +1,54 @@
 
-[4msongbook[24m()                                                          [4msongbook[24m()
+[4msongbook[24m()                                                                                                                                                     [4msongbook[24m()
 
 [1msongbook [22m- generate chord books
 
-
 [1mSYNOPSIS[0m
-       [1msongbook [22m-l|-h [-s,-i,-o]
+       [1mconverter [22m-l|-h [-s,-i,-o]
 
+       [1mmakebook [22m-l|-h [-p <path> -o <path>]
 
 [1mDESCRIPTION[0m
        [1msongbook[0m
 
-       Program  to  create  simple song books for different formats. Currently
-       following formats are supported:
-
+       Program to create simple song books for different formats. Currently following formats are supported:
 
               - LaTeX using the leadsheets package
               - HTML
 
-
-
 [1mOPTIONS[0m
-       -h     Set HTML as Output format
+       [1mgeneral[0m
 
+       -h     Set HTML as Output format
 
        -l     Set LaTeX as Output format
 
+       [1mconverter[0m
 
        -s     Generate standalone document
-
 
        -i <input file>
               Input file path
 
-
        -o <output file>
               Output file path
 
-       Either -h or -l have to be provided. If input or output file are  omit‐
-       ted, the program reads and writes from stdin and stdout respectively.
+       Either -h or -l have to be provided. If input or output file are omitted, the program reads and writes from stdin and stdout respectively.
 
+       [1mmakebook[0m
 
+       -p <input file>
+              Input directory path. Default is the current working directory
+
+       -o <output file>
+              Output directory path/file. Default is book.tex for latex or the directory book for HTML
 
 [1mDIAGNOSTICS[0m
        Errors are written in human readable form to stderr
 
-
 [1mEXIT STATUS[0m
        [1m0      [22mSuccess
 
-
        [1m255    [22mError
 
-
-                                                                    [4msongbook[24m()
+                                                                                                                                                               [4msongbook[24m()

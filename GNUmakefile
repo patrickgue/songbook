@@ -5,12 +5,13 @@ APP_SRCS=converter.c
 LIB_OBJS=$(LIB_SRCS:.c=.o)
 APP_OBJS=$(APP_SRCS:.c=.o)
 MAN=songbook.5
+MAN_CAT=songbook.cat5
 
 CFLAGS+=-g -Wall
 
 APP_LDFLAGS=-lsongbook -L.
 
-World: $(PROG) $(LIB)
+World: $(PROG) $(LIB) $(MAN_CAT)
 
 $(PROG): $(LIB) $(APP_OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS) $(APP_LDFLAGS)
@@ -27,6 +28,9 @@ renderer_html_template.h: template.html
 renderer_latex_template.h: template.tex
 	xxd -i template.tex > renderer_latex_template.h
 
+$(MAN_CAT): $(MAN)
+	export MAN_KEEP_FORMATTING=1
+	man ./$^ > $@
 
 clean:
 	rm -f $(APP_OBJS) $(PROG) $(LIB) $(LIB_OBJS)
