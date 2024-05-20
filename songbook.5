@@ -5,9 +5,16 @@
 - generate chord books
 
 .SH SYNOPSIS
-.B songbook
+.B converter
 .RB -l|-h
 .RB [-s,-i,-o]
+
+.B makebook
+.RB -l|-h
+.RB [-p
+.RB <path>
+.RB -o
+.RB <path>]
 
 .SH DESCRIPTION
 .B songbook
@@ -23,11 +30,17 @@ Program to create simple song books for different formats. Currently following f
 
 
 .SH OPTIONS
+
+.B general
+
 .IP "-h"
 Set HTML as Output format
 
 .IP "-l"
 Set LaTeX as Output format
+.RE
+
+.B converter
 
 .IP "-s"
 Generate standalone document
@@ -41,6 +54,15 @@ Output file path
 
 Either -h or -l have to be provided. If input or output file are omitted, the program reads and writes from stdin and stdout respectively.
 
+
+.B makebook
+
+.IP "-p <input file>"
+Input directory path. Default is the current working directory
+
+.IP "-o <output file>"
+Output directory path/file. Default is book.tex for latex or the directory book for HTML
+.RE
 
 .SH DIAGNOSTICS
 .PP

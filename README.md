@@ -27,7 +27,7 @@ See [example.song](example.song)
 
 ## Usage
 
-`songbook` has following arguments:
+`converter` has following arguments:
 
 `-h` Output HTML
 
