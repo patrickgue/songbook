@@ -47,7 +47,7 @@ void render_html_title(struct s_song_meta meta)
     wchar_t w_template[template_html_len + 1];
     if (standalone)
     {
-        strncpy(template_html_str, template_html, template_html_len + 1);
+        strncpy(template_html_str, (const char*) template_html, template_html_len + 1);
         template_html_str[template_html_len] = 0;
         swprintf(w_template, template_html_len + 1, L"%hs", template_html_str);
         fwprintf(fd, w_template, meta.song);

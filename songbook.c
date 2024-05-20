@@ -18,7 +18,7 @@ int main(int argc, char **argv)
         chords_buffer[BUFF_SIZE] = L"",
         text_buffer[BUFF_SIZE] = L"",
         current_section_name[BUFF_SIZE];
-    char file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "", utf8_buffer[BUFF_SIZE];
+    char file_input[PATH_SIZE] = "", file_output[PATH_SIZE] = "", utf8_buffer[BUFF_SIZE] = "";
 
     FILE *fd_in, *fd_out;
     struct s_chord_text chords[CHORD_ITEMS_MAX];
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
     
     while (fgets(utf8_buffer, BUFF_SIZE, fd_in) != NULL)
     {
-        if (utf8_buffer == NULL || strlen(utf8_buffer) == 0)
+        if (strlen(utf8_buffer) == 0)
             continue;
 
         mbstowcs(buffer, utf8_buffer, BUFF_SIZE);
@@ -289,4 +289,5 @@ wchar_t *capo_str(int c)
     case 10: return L"X";
     case 11: return L"XI";
     }
+    return L"";
 }

@@ -3,7 +3,7 @@ SRCS=songbook.c render.c renderer_html.c renderer_latex.c
 OBJS=$(SRCS:.c=.o)
 MAN=songbook.5
 
-CFLAGS+=-g
+CFLAGS+=-g -Wall
 
 World: $(PROG)
 
