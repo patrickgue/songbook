@@ -1,14 +1,20 @@
 PROG=songbook
+LIB=libsongbook.a
 SRCS=songbook.c render.c renderer_html.c renderer_latex.c
+APP_SRCS=$(SRCS) main.c
 OBJS=$(SRCS:.c=.o)
+APP_OBJS=$(APP_SRCS:.c=.o)
 MAN=songbook.5
 
 CFLAGS+=-g -Wall
 
-World: $(PROG)
+World: $(PROG) $(LIB)
 
-$(PROG): $(OBJS)
+$(PROG): $(APP_OBJS)
 	$(CC) -o $@ $(LDFLAGS) $^
+
+$(LIB): $(OBJS)
+	ar rcs libsongbook.a $^
 
 %.o:%.c
 	$(CC) -c $^ $(CFLAGS)
@@ -21,4 +27,4 @@ renderer_latex_template.h: template.tex
 
 
 clean:
-	rm -f $(OBJS) $(PROG)
+	rm -f $(APP_OBJS) $(PROG) $(LIB)
