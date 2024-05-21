@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <string.h>
+#include <dirent.h>
 
 #include "types.h"
 #include "songbook.h"
@@ -13,6 +14,7 @@ int main(int argc, char **argv)
     int i;
     enum e_render_type type = NONE;
     char input_path[BUFF_SIZE] = ".", output_path[BUFF_SIZE] = "";
+    FILE *output_file;
 
     for (i = 1; i < argc; i++)
     {
@@ -54,9 +56,76 @@ int main(int argc, char **argv)
     }
 
     printf("Type: %s\nOutput Path: %s\nInput Path: %s\n", type == LATEX ? "LATEX" : "HTML", output_path, input_path);
+
+    output_file = fopen(output_path, "w");
+
+    if (output_file == NULL)
+    {
+        die("unable to open output file");
+    }
+
+    makebook_traverse_tree(input_path, output_file);
+
+    fclose(output_file);
     return 0;
 }
 
+void makebook_traverse_tree(char *path, FILE *out)
+{
+    struct dirent *dir;
+    char sub_dir_path[BUFF_SIZE];
+    DIR *d = opendir(path);
+
+    while ((dir = readdir(d)) != NULL)
+    {
+        if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0)
+            continue;
+        if (dir->d_type & DT_DIR)
+        {
+            snprintf(sub_dir_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
+            printf("%s\n", dir->d_name);
+            makebook_traverse_tree(sub_dir_path, out);
+        }
+        else if (ends_with(dir->d_name, ".song"))
+        {
+            printf("SONG: %s\n", dir->d_name);
+        }
+    }
+
+    closedir(d);
+}
+
+int index_of(char *str, char *search)
+{
+    int i, j, found;
+
+    for (i = 0; i < strlen(str); i++)
+    {
+        if (str[i] == search[0])
+        {
+            found = 1;
+            for (j = 0; j < strlen(search); j++)
+            {
+                if (str[i + j] != search[j])
+                {
+                    found = 0;
+                    break;
+                }
+            }
+
+            if (found)
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+int ends_with(char *str, char *search)
+{
+    return (index_of(str, search) == strlen(str) - strlen(search));
+}
 
 void die(char *msg)
 {
