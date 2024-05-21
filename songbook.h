@@ -10,7 +10,6 @@
 
 #define PATH_SIZE 1024
 #define CHORD_ITEMS_MAX 64
-#define BUFF_SIZE 2048
 
 /*
 #define A   0
