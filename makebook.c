@@ -3,6 +3,7 @@
 #include <wchar.h>
 #include <string.h>
 #include <dirent.h>
+#include <locale.h>
 
 #include "types.h"
 #include "songbook.h"
@@ -18,6 +19,8 @@ int main(int argc, char **argv)
     char input_path[BUFF_SIZE] = ".", output_path[BUFF_SIZE] = "";
     FILE *output_file;
 
+    setlocale(LC_ALL, "");
+    
     for (i = 1; i < argc; i++)
     {
         switch(argv[i][1])
