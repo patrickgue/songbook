@@ -9,6 +9,8 @@
 
 #include "makebook.h"
 
+#define DEBUG 1
+
 int main(int argc, char **argv)
 {
     int i;
@@ -28,7 +30,7 @@ int main(int argc, char **argv)
             break;
         case 'h':
             if (type == NONE)
-                type = LATEX;
+                type = HTML;
             else
                 die("Only one output format can be specified");
             break;
@@ -76,28 +78,62 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
     char full_path[BUFF_SIZE];
     DIR *d = opendir(path);
     FILE *file_in;
-
+    int subdir_count = 0, songs_count = 0, i;
+    char (*subdir_paths)[PATH_SIZE] = malloc(0),
+        (*songs_paths)[PATH_SIZE] = malloc(0);
 
     while ((dir = readdir(d)) != NULL)
     {
         if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0)
             continue;
+        
         if (dir->d_type & DT_DIR)
         {
             snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
-            makebook_traverse_tree(full_path, out, type);
+            subdir_paths = realloc(subdir_paths, PATH_SIZE * (subdir_count + 1));
+            strncpy(subdir_paths[subdir_count++], full_path, PATH_SIZE);
         }
         else if (ends_with(dir->d_name, ".song"))
         {
             snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
-            file_in = fopen(full_path, "r");
-            // TODO error handling
-            songbook_render(file_in, out, type, BODY_ONLY);
-            fclose(file_in);
+            songs_paths = realloc(songs_paths, PATH_SIZE * (songs_count + 1));
+            strncpy(songs_paths[songs_count++], full_path, PATH_SIZE);
         }
     }
-
     closedir(d);
+
+    qsort(subdir_paths, subdir_count, PATH_SIZE, (int (*)(const void *, const void *)) strcmp);
+    qsort(songs_paths, songs_count, PATH_SIZE, (int (*)(const void *, const void *)) strcmp);
+    
+
+#ifdef DEBUG
+    printf("SUB DIRECTORIES\n");
+#endif
+    for (i = 0; i < subdir_count; i++)
+    {
+#ifdef DEBUG
+        printf("TRAVERSE DIRECTORY %s\n", subdir_paths[i]);
+#endif
+        makebook_traverse_tree(subdir_paths[i], out, type);
+    }
+
+#ifdef DEBUG
+    if (songs_count > 0)
+        printf("PROCESS SONG FILES\n");
+#endif    
+    for (i = 0; i < songs_count; i++)
+    {
+#ifdef DEBUG
+        printf("SONG FILE %s\n", songs_paths[i]);
+#endif
+        file_in = fopen(songs_paths[i], "r");
+        // TODO error handling
+        songbook_render(file_in, out, type, BODY_ONLY);
+        fclose(file_in);
+    }
+    
+    free(subdir_paths);
+    free(songs_paths);
 }
 
 int index_of(char *str, char *search)

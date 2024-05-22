@@ -8,7 +8,6 @@
 
 #include "render.h"
 
-#define PATH_SIZE 1024
 #define CHORD_ITEMS_MAX 64
 
 #define BODY_ONLY 0

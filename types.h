@@ -3,6 +3,7 @@
 
 #define CHORD_TEXT_SIZE 1024
 #define BUFF_SIZE 2048
+#define PATH_SIZE 1024
 
 
 struct s_chord_text
