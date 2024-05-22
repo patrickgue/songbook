@@ -20,6 +20,7 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
     struct s_chord_text chords[CHORD_ITEMS_MAX];
     struct s_song_meta meta;
 
+    meta_init(&meta);
     render_init(fd_out, type, standalone);
     
     i = 1;
@@ -39,7 +40,7 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
             }
             else
             {
-                read_meta(buffer, &meta);
+                meta_read(buffer, &meta);
             }
         }
 
@@ -175,7 +176,7 @@ int songbook_build_chord_list(struct s_chord_text *chords, wchar_t *chord_text, 
     return j;
 }
 
-void read_meta(wchar_t *l, struct s_song_meta *meta)
+void meta_read(wchar_t *l, struct s_song_meta *meta)
 {
     wchar_t key[64] = L"", line[64] = L"";
     int i = 0;
@@ -197,6 +198,13 @@ void read_meta(wchar_t *l, struct s_song_meta *meta)
     {
         meta->capo = (int) wcstol((line + (i + 2)), NULL, 10);
     }
+}
+
+void meta_init(struct s_song_meta *meta)
+{
+    wcscpy(meta->artist, L"");
+    wcscpy(meta->song, L"");
+    meta->capo = 0;
 }
 
 wchar_t *capo_str(int c)
