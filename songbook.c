@@ -16,7 +16,7 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
     wchar_t buffer[BUFF_SIZE],
         chords_buffer[BUFF_SIZE] = L"",
         text_buffer[BUFF_SIZE] = L"",
-        current_section_name[BUFF_SIZE];;
+        current_section_name[BUFF_SIZE] = L"";
     struct s_chord_text chords[CHORD_ITEMS_MAX];
     struct s_song_meta meta;
 

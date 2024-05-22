@@ -9,7 +9,9 @@
 
 void render_html_init(FILE *, int);
 void render_html_section(wchar_t *);
+void render_html_section_end();
 void render_html_line(struct s_chord_text *, int count);
 void render_html_title(struct s_song_meta);
+void render_html_song_end();
 void render_html_standalone_footer();
 #endif

@@ -26,7 +26,7 @@ void render_section(wchar_t *section)
 {
     switch(type)
     {
-    case HTML: render_html_section(section);  break;
+    case HTML: render_html_section(section); break;
     case LATEX: render_latex_section(section); break;
     default: render_type_not_supported(type); break;        
     }
@@ -56,13 +56,17 @@ void render_song_end()
 {
     switch (type)
     {
-    case HTML: render_html_standalone_footer(); break;
+    case HTML: render_html_song_end(); break;
     case LATEX: render_latex_song_end(); break;
     default: render_type_not_supported(type); break;
     }
 }
 
 void render_section_end(wchar_t *section){
-    if (type == LATEX)
-        render_latex_section_end(section);
+    switch (type)
+    {
+    case LATEX: render_latex_section_end(section); break;
+    case HTML: render_html_section_end(); break;
+    case NONE: render_type_not_supported(type);
+    }
 }

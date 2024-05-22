@@ -19,7 +19,12 @@ void render_html_section(wchar_t *section)
     wcsncpy(sec_cpy, section, BUFF_SIZE);
     sec_cpy[0] = sec_cpy[0] & 0b11011111;
     
-    fwprintf(fd, L"<h3>%ls</h3>\n", sec_cpy);
+    fwprintf(fd, L"<div class=\"sec\">\n<h3>%ls</h3>\n", sec_cpy);
+}
+
+void render_html_section_end()
+{
+    fwprintf(fd, L"</div>\n");
 }
 
 void render_html_line(struct s_chord_text *chords, int count)
@@ -53,16 +58,22 @@ void render_html_title(struct s_song_meta meta)
         fwprintf(fd, w_template, meta.song);
     }
     
-    fwprintf(fd, L"<h2>%ls</h2><p><i>%ls", meta.song, meta.artist);
+    fwprintf(fd, L"<div class=\"song\">\n<h2>%ls</h2><p><i>%ls", meta.song, meta.artist);
     if (meta.capo != 0)
     {
-        fwprintf(fd, L", Capo: %ls", capo_str(meta.capo));
+        fwprintf(fd, L" Capo: %ls", capo_str(meta.capo));
     }
-    fwprintf(fd, L"</i></p>\n");
+    fwprintf(fd, L"</i></p>\n<div class=\"song-content\">");
+}
+
+void render_html_song_end()
+{
+    fwprintf(fd, L"</div></div>\n");
+    if (standalone)
+        render_html_standalone_footer();
 }
 
 void render_html_standalone_footer()
 {
-    if (standalone)
-        fwprintf(fd, L"</div>\n</body>\n</html>\n");
+    fwprintf(fd, L"</div>\n</body>\n</html>\n");
 }

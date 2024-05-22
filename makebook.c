@@ -12,12 +12,15 @@
 
 #define DEBUG 1
 
+char *template_head;
+char *template_foot;
+
 int main(int argc, char **argv)
 {
     int i;
     enum e_render_type type = NONE;
-    char input_path[BUFF_SIZE] = ".", output_path[BUFF_SIZE] = "";
-    FILE *output_file;
+    char input_path[BUFF_SIZE] = ".", output_path[BUFF_SIZE] = "", template_path[BUFF_SIZE] = "";
+    FILE *output_file, *template_file;
 
     setlocale(LC_ALL, "");
     
@@ -49,6 +52,12 @@ int main(int argc, char **argv)
             else
                 die("-p needs argument");
             break;
+        case 't':
+            if (i < argc - 1)
+                strncpy(template_path, argv[++i], BUFF_SIZE);
+            else
+                die("-t needs argument");
+            break;
         default:
             fprintf(stderr, "unknown argument: %s\n", argv[i]);
             die("unknown argument");
@@ -69,8 +78,20 @@ int main(int argc, char **argv)
         die("unable to open output file");
     }
 
+    template_file = fopen(template_path, "r");
+
+    if (template_file != NULL)
+    {
+        makebook_template_copy_head(template_file, output_file);
+    }
+
     makebook_traverse_tree(input_path, output_file, type);
 
+    if (template_file != NULL)
+    {
+        makebook_template_copy_foot(template_file, output_file);
+    }
+    
     fclose(output_file);
     return 0;
 }
@@ -87,7 +108,8 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
 
     while ((dir = readdir(d)) != NULL)
     {
-        if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0)
+        /* skip everything starting with a '.' */
+        if (dir->d_name[0] == '.')
             continue;
         
         if (dir->d_type & DT_DIR)
@@ -96,7 +118,7 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
             subdir_paths = realloc(subdir_paths, PATH_SIZE * (subdir_count + 1));
             strncpy(subdir_paths[subdir_count++], full_path, PATH_SIZE);
         }
-        else if (ends_with(dir->d_name, ".song"))
+        else if (index_of(dir->d_name, ".song") >= 0)
         {
             snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
             songs_paths = realloc(songs_paths, PATH_SIZE * (songs_count + 1));
@@ -139,36 +161,45 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
     free(songs_paths);
 }
 
+void makebook_template_copy_head(FILE *temp, FILE *fd)
+{
+    char buff[BUFF_SIZE];
+
+    while (fgets(buff, BUFF_SIZE, temp) != NULL)
+    {
+        if (strstr(buff, "<$body$>") != NULL)
+            break;
+        fwprintf(fd, L"%s", buff);
+    }
+}
+
+void makebook_template_copy_foot(FILE *temp, FILE *fd)
+{
+    char buff[BUFF_SIZE];
+
+    while (fgets(buff, BUFF_SIZE, temp) != NULL)
+    {
+        fwprintf(fd, L"%s", buff);
+    }
+}
+
+
 int index_of(char *str, char *search)
 {
-    int i, j, found;
-
-    for (i = 0; i < strlen(str); i++)
+    char *ptr = strstr(str, search);
+    if (ptr == NULL)
     {
-        if (str[i] == search[0])
-        {
-            found = 1;
-            for (j = 0; j < strlen(search); j++)
-            {
-                if (str[i + j] != search[j])
-                {
-                    found = 0;
-                    break;
-                }
-            }
-
-            if (found)
-            {
-                return i;
-            }
-        }
+        return -1;
     }
-    return -1;
+    else
+    {
+        return str - search;
+    }
 }
 
 int ends_with(char *str, char *search)
 {
-    return (index_of(str, search) == strlen(str) - strlen(search));
+    return index_of(str, search) == (strlen(str) - strlen(search));
 }
 
 void die(char *msg)

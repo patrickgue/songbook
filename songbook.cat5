@@ -1,29 +1,30 @@
 
-[4msongbook[24m()                                                                                                                                                     [4msongbook[24m()
+songbook()                                                                         songbook()
 
-[1msongbook [22m- generate chord books
+songbook - generate chord books
 
-[1mSYNOPSIS[0m
-       [1mconverter [22m-l|-h [-s,-i,-o]
+SYNOPSIS
+       converter -l|-h [-s,-i,-o]
 
-       [1mmakebook [22m-l|-h [-p <path> -o <path>]
+       makebook -l|-h [-p <path> -o <path> -t <path>]
 
-[1mDESCRIPTION[0m
-       [1msongbook[0m
+DESCRIPTION
+       songbook
 
-       Program to create simple song books for different formats. Currently following formats are supported:
+       Program to create simple song books for different formats. Currently following formats
+       are supported:
 
               - LaTeX using the leadsheets package
               - HTML
 
-[1mOPTIONS[0m
-       [1mgeneral[0m
+OPTIONS
+       general
 
        -h     Set HTML as Output format
 
        -l     Set LaTeX as Output format
 
-       [1mconverter[0m
+       converter
 
        -s     Generate standalone document
 
@@ -33,22 +34,24 @@
        -o <output file>
               Output file path
 
-       Either -h or -l have to be provided. If input or output file are omitted, the program reads and writes from stdin and stdout respectively.
+       Either  -h or -l have to be provided. If input or output file are omitted, the program
+       reads and writes from stdin and stdout respectively.
 
-       [1mmakebook[0m
+       makebook
 
        -p <input file>
               Input directory path. Default is the current working directory
 
        -o <output file>
-              Output directory path/file. Default is book.tex for latex or the directory book for HTML
+              Output directory path/file. Default is book.tex for latex or the directory book
+              for HTML
 
-[1mDIAGNOSTICS[0m
+DIAGNOSTICS
        Errors are written in human readable form to stderr
 
-[1mEXIT STATUS[0m
-       [1m0      [22mSuccess
+EXIT STATUS
+       0      Success
 
-       [1m255    [22mError
+       255    Error
 
-                                                                                                                                                               [4msongbook[24m()
+                                                                                   songbook()
