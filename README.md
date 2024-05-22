@@ -51,3 +51,6 @@ Build using GNU Make: `make`
 
 * Support additional leadsheets features
 
+## Supported environments
+
+Successfully tested on Linux (x86_64, gcc) AND FreeBSD (X86_64, clang), probably works on a lot of other platforms.
