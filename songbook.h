@@ -11,6 +11,9 @@
 #define PATH_SIZE 1024
 #define CHORD_ITEMS_MAX 64
 
+#define BODY_ONLY 0
+#define STANDALONE 1
+
 /*
 #define A   0
 #define AS  1

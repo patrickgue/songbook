@@ -64,17 +64,19 @@ int main(int argc, char **argv)
         die("unable to open output file");
     }
 
-    makebook_traverse_tree(input_path, output_file);
+    makebook_traverse_tree(input_path, output_file, type);
 
     fclose(output_file);
     return 0;
 }
 
-void makebook_traverse_tree(char *path, FILE *out)
+void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
 {
     struct dirent *dir;
-    char sub_dir_path[BUFF_SIZE];
+    char full_path[BUFF_SIZE];
     DIR *d = opendir(path);
+    FILE *file_in;
+
 
     while ((dir = readdir(d)) != NULL)
     {
@@ -82,13 +84,16 @@ void makebook_traverse_tree(char *path, FILE *out)
             continue;
         if (dir->d_type & DT_DIR)
         {
-            snprintf(sub_dir_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
-            printf("%s\n", dir->d_name);
-            makebook_traverse_tree(sub_dir_path, out);
+            snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
+            makebook_traverse_tree(full_path, out, type);
         }
         else if (ends_with(dir->d_name, ".song"))
         {
-            printf("SONG: %s\n", dir->d_name);
+            snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
+            file_in = fopen(full_path, "r");
+            // TODO error handling
+            songbook_render(file_in, out, type, BODY_ONLY);
+            fclose(file_in);
         }
     }
 
