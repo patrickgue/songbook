@@ -41,7 +41,7 @@ void render_html_line(struct s_chord_text *chords, int count)
         }
 
         wcsncpy(section, chords[i].section, BUFF_SIZE);
-        fwprintf(fd, L"<span class=\"section\" style=\"min-width: %dpx\">%ls</span>", wcslen(chords[i].chord) * 10, section);
+        fwprintf(fd, L"<span class=\"section\" style=\"min-width: %dpx\">%ls</span>", wcslen(chords[i].chord) * 15, section);
     }
     fwprintf(fd, L"</p>\n");
 }
