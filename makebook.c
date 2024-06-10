@@ -99,13 +99,35 @@ int main(int argc, char **argv)
 void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
 {
     struct dirent *dir;
-    char full_path[BUFF_SIZE];
+    char full_path[BUFF_SIZE], buff[BUFF_SIZE];
     DIR *d = opendir(path);
-    FILE *file_in;
+    FILE *file_in, *readme_file;
     int subdir_count = 0, songs_count = 0, i;
     char (*subdir_paths)[PATH_SIZE] = malloc(0),
         (*songs_paths)[PATH_SIZE] = malloc(0);
 
+    snprintf(full_path, BUFF_SIZE, "%s/readme.txt", path);
+    readme_file = fopen(full_path, "r");
+
+    fprintf(out, "<div class=\"category\">\n");
+    
+    if (readme_file != NULL)
+    {
+#ifdef DEBUG
+        printf("Open file %s\n", full_path);
+#endif
+        fprintf(out, "<p>");
+        while (fgets(buff, BUFF_SIZE, readme_file) != NULL)
+        {
+            fprintf(out, "%s\n\n", buff);
+#ifdef DEBUG
+            printf("%s\n", buff);
+#endif
+        }
+        fprintf(out, "</p>\n");
+        fclose(readme_file);
+    }    
+    
     while ((dir = readdir(d)) != NULL)
     {
         /* skip everything starting with a '.' */
@@ -156,6 +178,8 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
         songbook_render(file_in, out, type, BODY_ONLY);
         fclose(file_in);
     }
+
+    fprintf(out, "</div><!-- /category -->");
     
     free(subdir_paths);
     free(songs_paths);
