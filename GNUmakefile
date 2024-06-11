@@ -41,3 +41,8 @@ $(MAN_CAT): $(MAN)
 
 clean:
 	rm -f $(APP_OBJS) $(PROG) $(LIB) $(LIB_OBJS) $(BOOK_PROG) $(BOOK_OBJS)
+
+
+install: $(PROG) $(BOOK_PROG)
+	cp $^ /usr/local/bin/
+
