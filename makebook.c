@@ -109,7 +109,7 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
     snprintf(full_path, BUFF_SIZE, "%s/readme.txt", path);
     readme_file = fopen(full_path, "r");
 
-    fprintf(out, "<div class=\"category\">\n");
+    fwprintf(out, L"<div class=\"category\">\n");
     
     if (readme_file != NULL)
     {
@@ -119,14 +119,14 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
         fprintf(out, "<p>");
         while (fgets(buff, BUFF_SIZE, readme_file) != NULL)
         {
-            fprintf(out, "%s\n\n", buff);
+            fwprintf(out, L"%s\n\n", buff);
 #ifdef DEBUG
             printf("%s\n", buff);
 #endif
         }
-        fprintf(out, "</p>\n");
+        fwprintf(out, L"</p>\n");
         fclose(readme_file);
-    }    
+    }
     
     while ((dir = readdir(d)) != NULL)
     {
@@ -179,7 +179,7 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
         fclose(file_in);
     }
 
-    fprintf(out, "</div><!-- /category -->");
+    fwprintf(out, L"</div><!-- /category -->");
     
     free(subdir_paths);
     free(songs_paths);
