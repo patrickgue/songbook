@@ -109,14 +109,25 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
     snprintf(full_path, BUFF_SIZE, "%s/readme.txt", path);
     readme_file = fopen(full_path, "r");
 
-    fwprintf(out, L"<div class=\"category\">\n");
+    if (type == HTML)
+    {
+        fwprintf(out, L"<div class=\"category\">\n");
+    }
     
     if (readme_file != NULL)
     {
 #ifdef DEBUG
         printf("Open file %s\n", full_path);
 #endif
-        fprintf(out, "<p>");
+
+        if (type == HTML)
+        {
+            fwprintf(out, L"<p>");
+        }
+        else
+        {
+            fwprintf(out, L"{\\itshape ");
+        }
         while (fgets(buff, BUFF_SIZE, readme_file) != NULL)
         {
             fwprintf(out, L"%s\n\n", buff);
@@ -124,7 +135,14 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
             printf("%s\n", buff);
 #endif
         }
-        fwprintf(out, L"</p>\n");
+        if (type == HTML)
+        {
+            fwprintf(out, L"</p>");
+        }
+        else
+        {
+            fwprintf(out, L"}\n");
+        }
         fclose(readme_file);
     }
     
@@ -179,8 +197,11 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
         fclose(file_in);
     }
 
-    fwprintf(out, L"</div><!-- /category -->");
-    
+    if (type == HTML)
+    {
+        fwprintf(out, L"</div><!-- /category -->");
+    }
+
     free(subdir_paths);
     free(songs_paths);
 }

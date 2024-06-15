@@ -3,24 +3,16 @@
 \usepackage[utf8]{inputenc}
 \usepackage[inner=16mm,outer=20mm,top=18mm,bottom=14mm]{geometry}
 
+\newcommand\chord[2][l]{%
+  \makebox[0pt][#1]{\begin{tabular}[b]{@{}l@{}}\textbf{#2}\\\mbox{}\end{tabular}}}
 
 
 \setcounter{secnumdepth}{0}
 \setlength\parindent{0pt}
 
-\usepackage{leadsheets}
-
-\definesongtitletemplate{custom}{\subsection{\songproperty{title}}}
-\setleadsheets{
-  title-template=custom,
-  chord-cs=\mychordname
-}
-\newcommand{\mychordname}[1]{\bfseries\sffamily\chordname{#1} \mdseries\rmfamily}
-
 
 \renewcommand{\familydefault}{ptm}
 \fontfamily{\familydefault}\selectfont
 
-\setleadsheets{verse/numbered=true}
 \begin{document}
 
