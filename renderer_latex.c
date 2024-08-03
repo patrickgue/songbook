@@ -13,10 +13,27 @@ void render_latex_init(FILE *f, int s)
     _latex_standalone = s;
 }
 
+void latex_section_title_transform(wchar_t *section, size_t len)
+{
+    int i;
+    for (i = 0; i < wcslen(section) && i < len; i++)
+    {
+        if (section[i] >= L'a' && section[i] <= L'z')
+        {
+            section[i] = section[i] & (0xff - ('a'-'A'));
+        }
+    }
+}
+
+#define SECTION_LABEL_LEN 64
+
 void render_latex_section(wchar_t *section)
 {
+    wchar_t sec[SECTION_LABEL_LEN];
+    wcsncpy(sec, section, SECTION_LABEL_LEN);
+    latex_section_title_transform(sec, SECTION_LABEL_LEN);
     // fwprintf(_latex_fd, L"\\begin{%ls}\n", section);
-    fwprintf(_latex_fd, L"\\subsection*{%ls}\n", section);
+    fwprintf(_latex_fd, L"\\subsection*{%ls}\n", sec);
 }
 
 void render_latex_section_end(wchar_t *section)
