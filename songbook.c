@@ -52,7 +52,12 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
             }
             
             wcsncpy(current_section_name, (buffer + 1), BUFF_SIZE);
-            current_section_name[wcslen(current_section_name) - 2] = 0;
+            for (j = wcslen(current_section_name); j > 0; j--)
+            {
+                if (current_section_name[j] == L']')
+                    current_section_name[j] = 0;
+            }
+
             for (j = 0; j < wcslen(current_section_name); j++)
             {
                 if (current_section_name[j] >= L'A' && current_section_name[j] <= L'Z')
