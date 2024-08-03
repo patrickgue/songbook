@@ -93,6 +93,7 @@ int main(int argc, char **argv)
     }
     
     fclose(output_file);
+    fclose(template_file);
     return 0;
 }
 
@@ -141,7 +142,7 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
         }
         else
         {
-            fwprintf(out, L"}\n");
+            fwprintf(out, L"}\n\\clearpage\n");
         }
         fclose(readme_file);
     }
