@@ -112,6 +112,12 @@ void render_latex_title(struct s_song_meta meta)
 //    if (meta.capo != 0)
 //        fwprintf(_latex_fd, L",capo=%d", meta.capo);
     //fwprintf(_latex_fd, L"}\n");
+    if (wcslen(meta.artist) > 0)
+        fwprintf(_latex_fd, L"\\textit{%ls}", meta.artist);
+
+    if (wcslen(meta.artist) > 0 && meta.capo != 0)
+        fwprintf(_latex_fd, L" - ");
+    
     if (meta.capo != 0)
         fwprintf(_latex_fd, L"\\textit{Capo: %ls}\n", capo_str(meta.capo));
         
