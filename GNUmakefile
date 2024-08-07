@@ -55,3 +55,5 @@ clean:
 install: $(PROG) $(BOOK_PROG)
 	cp $^ /usr/local/bin/
 
+install_hooks:
+	cp .hooks/* .git/hooks/
