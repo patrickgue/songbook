@@ -49,7 +49,7 @@ $(MAN_CAT): $(MAN)
 	man ./$^ > $@
 
 clean:
-	rm -f $(APP_OBJS) $(PROG) $(LIB) $(LIB_OBJS) $(BOOK_PROG) $(BOOK_OBJS)
+	rm -f $(APP_OBJS) $(PROG) $(LIB) $(LIB_OBJS) $(BOOK_PROG) $(BOOK_OBJS) $(TEST_PROG) $(TEST_OBJS)
 
 
 install: $(PROG) $(BOOK_PROG)
