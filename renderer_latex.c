@@ -99,28 +99,27 @@ void render_latex_line(struct s_chord_text *chords, int count)
 
 void render_latex_title(struct s_song_meta meta)
 {
+    int has_artist, has_capo;
+
     if (_latex_standalone)
     {
         template_tex[template_tex_len - 1] = 0;
         fwprintf(_latex_fd, L"%hs", template_tex);
     }
     
-    // fwprintf(_latex_fd, L"\\begin{song}[align-chords=l]{title=%ls", meta.song);
-
     fwprintf(_latex_fd, L"\\section*{%ls}\n", meta.song);
 
-//    if (meta.capo != 0)
-//        fwprintf(_latex_fd, L",capo=%d", meta.capo);
-    //fwprintf(_latex_fd, L"}\n");
-    if (wcslen(meta.artist) > 0)
+    has_artist = wcslen(meta.artist) > 0;
+    has_capo = meta.capo != 0;
+
+    if (has_artist)
         fwprintf(_latex_fd, L"\\textit{%ls}", meta.artist);
 
-    if (wcslen(meta.artist) > 0 && meta.capo != 0)
+    if (has_artist && has_capo)
         fwprintf(_latex_fd, L" - ");
-    
-    if (meta.capo != 0)
+
+    if (has_capo)
         fwprintf(_latex_fd, L"\\textit{Capo: %ls}\n", capo_str(meta.capo));
-        
 }
 
 void render_latex_song_end()
