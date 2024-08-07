@@ -28,7 +28,8 @@ void test_meta_read(void)
     }
 
     assert(meta.capo == 4);
-
+    assert(wcsncmp(meta.artist, L"Artist", 32) == 0);
+    assert(wcsncmp(meta.song, L"Hello World", 32) == 0);
 }
 
 int main(int argc, char **argv)
