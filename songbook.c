@@ -11,7 +11,7 @@
 
 void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int standalone)
 {
-    int i, j, is_only_chords, chords_count;
+    int i, j, is_only_chords, is_only_text, chords_count;
     char utf8_buffer[BUFF_SIZE];
     wchar_t buffer[BUFF_SIZE],
         chords_buffer[BUFF_SIZE] = L"",
@@ -88,7 +88,14 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
             is_only_chords = 1;
         }
 
-        if (buffer[0] == L'>')
+        if (buffer[0] == L'>' && buffer[1] == L'>')
+        {
+            wcsncpy(text_buffer, buffer + 3, BUFF_SIZE);
+            text_buffer[wcslen(text_buffer) - 1] = 0;
+            wcscpy(chords_buffer, L"");
+            is_only_text = 1;
+        }
+        else if (buffer[0] == L'>')
         {
             if (wcslen(text_buffer) > 0)
             {
@@ -99,12 +106,21 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
             text_buffer[wcslen(text_buffer) - 1] = 0;
         }
 
-        if (wcslen(chords_buffer) > 0 && (wcslen(text_buffer) > 0 || is_only_chords))
+        if ((wcslen(chords_buffer) > 0 || is_only_text) && (wcslen(text_buffer) > 0 || is_only_chords))
         {
-            chords_count = songbook_build_chord_list(chords, chords_buffer, text_buffer);
+            if (is_only_text)
+            {
+                chords_count = songbook_build_text_only_line(chords, text_buffer);
+            }
+            else
+            {
+                chords_count = songbook_build_chord_list(chords, chords_buffer, text_buffer);
+            }
+
             wcscpy(chords_buffer, L"");
             wcscpy(text_buffer, L"");
             is_only_chords = 0;
+            is_only_text = 0;
 
             render_line(chords, chords_count);
         }
@@ -118,6 +134,14 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
     
     render_section_end(current_section_name);
     render_song_end();
+}
+
+int songbook_build_text_only_line(struct s_chord_text *chords, wchar_t *text)
+{
+    wcscpy(chords->chord, L"");
+    wcsncpy(chords->section, text, CHORD_TEXT_SIZE);
+
+    return 1;
 }
 
 int songbook_build_chord_list(struct s_chord_text *chords, wchar_t *chord_text, wchar_t *text)

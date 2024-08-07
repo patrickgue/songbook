@@ -29,6 +29,7 @@
 
 void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int standalone);
 int songbook_build_chord_list(struct s_chord_text *chords, wchar_t *chord_text, wchar_t *text);
+int songbook_build_text_only_line(struct s_chord_text *chords, wchar_t *text);
 void meta_init(struct s_song_meta *meta);
 void meta_read(wchar_t *line, struct s_song_meta *meta);
 wchar_t *capo_str(int c);
