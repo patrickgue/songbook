@@ -61,7 +61,7 @@ void render_html_title(struct s_song_meta meta)
     fwprintf(fd, L"<div class=\"song\">\n<h2>%ls</h2><p><i>%ls", meta.song, meta.artist);
     if (meta.capo != 0)
     {
-        fwprintf(fd, L" Capo: %ls", capo_str(meta.capo));
+        fwprintf(fd, L"%ls Capo: %ls", wcslen(meta.artist) > 0 ? L"," : L"", capo_str(meta.capo));
     }
     fwprintf(fd, L"</i></p>\n<div class=\"song-content\">");
 }
