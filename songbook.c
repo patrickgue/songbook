@@ -212,21 +212,24 @@ void meta_init(struct s_song_meta *meta)
     meta->capo = 0;
 }
 
+wchar_t capos[12][5] = {
+    L"I",
+    L"II",
+    L"III",
+    L"IV",
+    L"V",
+    L"VI",
+    L"VII",
+    L"VIII",
+    L"IX",
+    L"X",
+    L"XI"
+};
+
 wchar_t *capo_str(int c)
 {
-    switch (c)
-    {
-    case 1: return L"I";
-    case 2: return L"II";
-    case 3: return L"III";
-    case 4: return L"IV";
-    case 5: return L"V";
-    case 6: return L"VI";
-    case 7: return L"VII";
-    case 8: return L"VIII";
-    case 9: return L"IX";
-    case 10: return L"X";
-    case 11: return L"XI";
-    }
+    if (c >= 1 && c <= 12)
+        return capos[c];
+
     return L"";
 }
