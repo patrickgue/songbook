@@ -108,9 +108,7 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
     int subdir_count = 0, songs_count = 0, i, is_dir;
     char (*subdir_paths)[PATH_SIZE] = malloc(0),
         (*songs_paths)[PATH_SIZE] = malloc(0);
-#ifdef _WIN32
     struct stat st;
-#endif
 
     snprintf(full_path, BUFF_SIZE, "%s/readme.txt", path);
     readme_file = fopen(full_path, "r");
@@ -159,12 +157,9 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
             continue;
 
         snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
-#ifdef _WIN32
         stat(full_path, &st);
         is_dir = S_ISDIR(st.st_mode);
-#else
-        is_dir = dir->d_type & DT_DIR;
-#endif
+
         if (is_dir)
         {
             subdir_paths = realloc(subdir_paths, PATH_SIZE * (subdir_count + 1));
