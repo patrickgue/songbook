@@ -104,6 +104,8 @@ void test_render_html()
     }
 
     assert(strcmp(output_buffer, song_rendered_html) == 0);
+
+    fclose(tmp_out);
 }
 
 void test_render_latex()
@@ -158,6 +160,8 @@ void test_render_latex()
     }
 
     assert(strcmp(output_buffer, song_rendered_latex) == 0);
+
+    fclose(tmp_out);
 }
 
 int main(int argc, char **argv)
