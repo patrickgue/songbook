@@ -5,6 +5,8 @@
 #include <dirent.h>
 #include <locale.h>
 
+#include <sys/stat.h>
+
 #include "types.h"
 #include "songbook.h"
 
@@ -103,9 +105,10 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
     char full_path[BUFF_SIZE], buff[BUFF_SIZE];
     DIR *d = opendir(path);
     FILE *file_in, *readme_file;
-    int subdir_count = 0, songs_count = 0, i;
+    int subdir_count = 0, songs_count = 0, i, is_dir;
     char (*subdir_paths)[PATH_SIZE] = malloc(0),
         (*songs_paths)[PATH_SIZE] = malloc(0);
+    struct stat st;
 
     snprintf(full_path, BUFF_SIZE, "%s/readme.txt", path);
     readme_file = fopen(full_path, "r");
@@ -152,16 +155,18 @@ void makebook_traverse_tree(char *path, FILE *out, enum e_render_type type)
         /* skip everything starting with a '.' */
         if (dir->d_name[0] == '.')
             continue;
-        
-        if (dir->d_type & DT_DIR)
+
+        snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
+        stat(full_path, &st);
+        is_dir = S_ISDIR(st.st_mode);
+
+        if (is_dir)
         {
-            snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
             subdir_paths = realloc(subdir_paths, PATH_SIZE * (subdir_count + 1));
             strncpy(subdir_paths[subdir_count++], full_path, PATH_SIZE);
         }
         else if (index_of(dir->d_name, ".song") >= 0)
         {
-            snprintf(full_path, BUFF_SIZE, "%s/%s", path, dir->d_name);
             songs_paths = realloc(songs_paths, PATH_SIZE * (songs_count + 1));
             strncpy(songs_paths[songs_count++], full_path, PATH_SIZE);
         }

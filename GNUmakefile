@@ -1,3 +1,9 @@
+
+CC=gcc
+
+#uncomment for cross compilation to win32
+#CC=x86_64-w64-mingw32-gcc
+
 PROG=converter
 BOOK_PROG=makebook
 TEST_PROG=testprg
