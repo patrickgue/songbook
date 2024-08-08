@@ -25,6 +25,8 @@ The formatting is quite simple, it works the following way:
 See [example.song](example.song)
 
 
+With makebook multiple `.song` files can be combined into a single web page or PDF document. The body section can be marked with the string `<$body$>`.
+
 ## Usage
 
 `converter` has following arguments:
@@ -41,6 +43,18 @@ See [example.song](example.song)
 
 Either `-h` or `-l` have to be provided. If input or output file are omitted, the program reads and writes from stdin and stdout respectively.
 
+`makebook` has following arguments:
+
+`-h` Output HTML
+
+`-l` Output LaTeX
+
+`-p` input file: Input directory path. Default is the current working directory
+
+`-o` output file: Output directory path/file. Default is book.tex for latex or the directory book for HTML
+
+`-t` template file
+
 
 ## Installation
 
@@ -53,4 +67,4 @@ Build using GNU Make: `make`
 
 ## Supported environments
 
-Successfully tested on Linux (x86_64, gcc) AND FreeBSD (X86_64, clang), probably works on a lot of other platforms.
+Works on Linux (x86_64, gcc). Compiles and mostly works on FreeBSD (c86_64, clang), and on WIN32 (with mingw32) with some minor bugs. Probably works on a lot of other platforms.
