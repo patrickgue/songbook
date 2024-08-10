@@ -1,57 +1,80 @@
+songbook()                                                          songbook()
 
-songbook()                                                                         songbook()
 
-songbook - generate chord books
+ssoonnggbbooookk - generate chord books
 
-SYNOPSIS
-       converter -l|-h [-s,-i,-o]
 
-       makebook -l|-h [-p <path> -o <path> -t <path>]
+SSYYNNOOPPSSIISS
+       ccoonnvveerrtteerr -l|-h [-s,-i,-o]
 
-DESCRIPTION
-       songbook
+       mmaakkeebbooookk -l|-h [-p <path> -o <path> -t <path>]
 
-       Program to create simple song books for different formats. Currently following formats
-       are supported:
+
+DDEESSCCRRIIPPTTIIOONN
+       ssoonnggbbooookk
+
+       Program to create simple song books for different formats. Currently
+       following formats are supported:
+
 
               - LaTeX using the leadsheets package
               - HTML
 
-OPTIONS
-       general
+
+
+OOPPTTIIOONNSS
+       ggeenneerraall
+
 
        -h     Set HTML as Output format
 
+
        -l     Set LaTeX as Output format
 
-       converter
+       ccoonnvveerrtteerr
+
 
        -s     Generate standalone document
+
 
        -i <input file>
               Input file path
 
+
        -o <output file>
               Output file path
 
-       Either  -h or -l have to be provided. If input or output file are omitted, the program
-       reads and writes from stdin and stdout respectively.
 
-       makebook
+       -t <template file>
+              Template file path
+
+
+       A template file has to be provided. Also, either -h or -l have to be
+       provided. If input or output file are omitted, the program reads and
+       writes from stdin and stdout respectively.
+
+
+       mmaakkeebbooookk
+
 
        -p <input file>
               Input directory path. Default is the current working directory
 
-       -o <output file>
-              Output directory path/file. Default is book.tex for latex or the directory book
-              for HTML
 
-DIAGNOSTICS
+       -o <output file>
+              Output directory path/file. Default is book.tex for latex or the
+              directory book for HTML
+
+
+DDIIAAGGNNOOSSTTIICCSS
        Errors are written in human readable form to stderr
 
-EXIT STATUS
-       0      Success
 
-       255    Error
+EEXXIITT SSTTAATTUUSS
+       00      Success
 
-                                                                                   songbook()
+
+       225555    Error
+
+
+                                                                    songbook()

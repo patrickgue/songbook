@@ -1,6 +1,3 @@
-
-CC=gcc
-
 #uncomment for cross compilation to win32
 #CC=x86_64-w64-mingw32-gcc
 
