@@ -27,7 +27,7 @@ void songbook_render(FILE *fd_in, FILE *fd_out, enum e_render_type type, int sta
 
     while (fgets(utf8_buffer, BUFF_SIZE, fd_in) != NULL)
     {
-        if (strlen(utf8_buffer) == 0)
+        if (strlen(utf8_buffer) == 0 || utf8_buffer[0] == '\n')
             continue;
 
         mbstowcs(buffer, utf8_buffer, BUFF_SIZE);
