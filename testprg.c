@@ -3,6 +3,7 @@
 #include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #include "songbook.h"
 
@@ -46,6 +47,26 @@ void test_parse_chords_line()
     assert(wcscmp(chords[1].chord, L"C") == 0);
     assert(wcscmp(chords[0].section, L"Hello, new ") == 0);
     assert(wcscmp(chords[1].section, L"World") == 0);
+}
+
+void test_parse_utf_8_line()
+{
+    wchar_t *chord_txt = L"Am    C";
+    char utf8_buffer[] = {'H', 0xc3, 0xa9, 'l', 'l', 'o', ' ', 'W', 0xc3, 0xb6, 'r', 'l', 'd', 0};
+    wchar_t text[64];
+    struct s_chord_text chords[2];
+    int count;
+
+    setlocale(LC_ALL, "");
+    mbstowcs(text, utf8_buffer, BUFF_SIZE);
+
+    count = songbook_build_chord_list(chords, chord_txt, text);
+    
+    assert(count == 2);
+    assert(wcscmp(chords[0].chord, L"Am") == 0);
+    assert(wcscmp(chords[1].chord, L"C") == 0);
+    assert(wcscmp(chords[0].section, L"Héllo ") == 0);
+    assert(wcscmp(chords[1].section, L"Wörld") == 0);
 }
 
 void test_render_html()
@@ -168,6 +189,7 @@ int main(int argc, char **argv)
 {
     test_meta_read(); succ("meta_read");
     test_parse_chords_line(); succ("parse_chord_line");
+    test_parse_utf_8_line(); succ("parse_chord_line UTF8");
     test_render_html(); succ("render_html");
     test_render_latex(); succ("render_latex");
     return 0;
