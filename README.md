@@ -67,4 +67,4 @@ Build using GNU Make: `make`
 
 ## Supported environments
 
-Works on Linux (x86_64, gcc). Compiles and mostly works on FreeBSD (c86_64, clang), and on WIN32 (with mingw32) with some minor bugs. Probably works on a lot of other platforms.
+Works on Linux (x86_64, gcc) and FreeBSD (x86_64, clang). Compiles and mostly works on WIN32 (with mingw32) with some minor bugs. Probably works on a lot of other platforms.
